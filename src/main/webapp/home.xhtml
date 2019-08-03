@@ -1,13 +1,124 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<head>
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
     <title>Accounts Page</title>
-</head>
-<body>
-#{welcome.status}
-</body>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,900"/>
+    <h:outputStylesheet name="bootstrap.min.css" library="bootstrap"/>
+    <h:outputStylesheet name="styles.css" library="css"/>
+</h:head>
+<h:body>
+
+    <h:form id="form1">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="g-pr-15--lg">
+                    <div class="d-flex justify-content-end align-items-center g-brd-bottom g-brd-gray-light-v4 g-pt-40 g-pb-20 g-font-bold g-font-size-18">
+                        Bank Accounts
+                    </div>
+                    <div class="g-brd-bottom g-brd-gray-light-v4">
+                        <div class="row g-pt-30">
+                            <div class="col-6 col-sm-5 col-lg-4 g-mb-30">
+                                <figure class="g-pos-rel">
+                                    <img class="img-fluid" src="#{resource['images/user1.png']}"
+                                         alt="Image Description"/>
+                                </figure>
+                            </div>
+
+                            <div class="col-6 col-sm-7 col-lg-8 g-mb-15">
+                                <div class="g-mb-30">
+                                    <h4 class="h5 g-color-black mb-0 mt-1">
+                                        <span class="u-link-v5 g-color-black g-color-primary--hover">
+                                            Customer: Khaled Jendi
+                                        </span>
+                                    </h4>
+                                    <p>You have 2 accounts</p>
+                                    <p>Account #1 balance: 5000, Transactions:</p>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <a class="d-block g-color-text g-color-primary--hover g-text-underline--none--hover g-py-5" href="#">Transaction #1: 500kr</a>
+                                        </li>
+                                        <li>
+                                            <a class="d-block g-color-text g-color-primary--hover g-text-underline--none--hover g-py-5" href="#">Transaction #2: 500kr</a>
+                                        </li>
+                                    </ul>
+                                    <p>Account #2 balance: 6000, Transactions:</p>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <a class="d-block g-color-text g-color-primary--hover g-text-underline--none--hover g-py-5" href="#">Transaction #1: 200kr</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <a class="btn u-btn-primary g-font-size-12 text-uppercase g-py-10 g-px-20" href="#">
+                                    More Info
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 g-brd-left--lg g-brd-gray-light-v4 g-pt-40">
+                <div class="g-pl-15--lg g-pt-60">
+                        <div id="filter_contents">
+                            <fieldset class="">
+                                <legend>Init Dababase</legend>
+                                <h:commandButton id="generate_db" value="Generate" styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
+                                    <f:ajax execute="" render="output"/>
+                                </h:commandButton>
+                            </fieldset>
+                        </div>
+
+<!--                        <h:commandButton id="b1" value="Welcome Me" styleClass="btn btn-block u-btn-black g-font-size-12 text-uppercase g-py-12 g-px-25">-->
+<!--                            <f:ajax execute="" render="output"/>-->
+<!--                        </h:commandButton>-->
+
+                        <h2><h:outputText id="output" value="#{accountsBean.checkAccountFacade}"/></h2>
+
+                        <div id="ajaxloader" class="spinner" style="display: none;">
+                            <img src="#{resource['images/spinner.gif']}" alt="" />
+                            <div>Loading</div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </h:form>
+
+    <!-- JS Global Compulsory -->
+    <h:outputScript name="jquery.min.js" library="jquery"/>
+    <h:outputScript name="jquery-migrate.min.js" library="jquery"/>
+    <h:outputScript name="popper.min.js" library="popper.js"/>
+    <h:outputScript name="bootstrap.min.js" library="bootstrap"/>
+
+
+    <script type="application/javascript">
+        jsf.ajax.addOnEvent(function (data) {
+            var ajaxstatus = data.status;
+            var ajaxloader = document.getElementById("ajaxloader");
+            var generate_db = document.getElementById("form1:generate_db");
+
+            switch (ajaxstatus) {
+                case "begin":
+                    generate_db.disabled = true;
+                    ajaxloader.style.display = 'block';
+                    break;
+                case "complete":
+                    generate_db.disabled = false;
+                    ajaxloader.style.display = 'none';
+                    break;
+                case "success":
+                    break;
+            }
+        });
+    </script>
+
+</h:body>
 </html>
