@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -14,24 +13,23 @@ import java.net.URL;
 public class ResponseBuilder {
     private static final Logger LOGGER = Logger.getLogger(ResponseBuilder.class.getName());
 
-    public static Reader buildReponse(String method, String contentType, String methodURL) {
+    public static Response buildReponse(String method, String contentType, String methodURL) {
         LOGGER.info("checkTransactionService is triggered");
-
+        Response response = new Response();
         try {
             URL url = new URL(AccountsBean.getBaseURL() + methodURL);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod(method);
             con.setRequestProperty("Content-Type", contentType);
 
-            int status = con.getResponseCode();
+            response.setResponseCode(con.getResponseCode());
 
-            Reader streamReader = null;
-
-            if (status > 299) {
-                return null;
+            if (response.getResponseCode() > 299) {
+                response.setReader(new InputStreamReader(con.getErrorStream()));
             } else {
-                return new InputStreamReader(con.getInputStream());
+                response.setReader(new InputStreamReader(con.getInputStream()));
             }
+            return response;
         } catch (MalformedURLException e) {
             LOGGER.error("checkTransactionService - MalformedURLException: " + e);
         } catch (ProtocolException e) {

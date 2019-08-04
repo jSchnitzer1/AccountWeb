@@ -48,7 +48,9 @@
                                                 <p>You have #{c.accounts != null ? c.accounts.size() : 0} accounts</p>
 
                                                 <ui:repeat value="#{c.accounts}" var="a" varStatus="aStatus">
-                                                    <p>Account No. #{aStatus.index + 1} - <span class="g-font-bold-century" style="color: red">balance: #{a.balance} SEK</span></p>
+                                                    <p>Account No. #{aStatus.index + 1} <br />
+                                                        <span class="g-font-bold-century" style="color: red">Account Id: #{a.accountId} - balance: #{a.balance} SEK</span>
+                                                    </p>
                                                     <p class="g-font-bold-century">Transactions</p>
 <!--                                                    <ul class="list-unstyled">-->
 <!--                                                        <li>-->
@@ -79,10 +81,32 @@
                             </div>
                             <fieldset class="">
                                 <legend>Generate Customers</legend>
-                                <h:commandButton id="generate_db" action="#{accountsBean.generateCustomers()}"
-                                                 value="Generate"
+                                <h:commandButton id="generate_db" action="#{accountsBean.generateCustomers(true)}"
+                                                 value="Fetch Customers"
                                                  styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
                                     <f:ajax execute="" render="customers output"/>
+                                </h:commandButton>
+                            </fieldset>
+                            <br />
+                            <fieldset class="">
+                                <legend>Create Account</legend>
+                                <table border="0" cellspacing="5">
+                                    <tr>
+                                        <td>Customer:</td>
+                                        <td>Initial Amount:</td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:inputText id="customerId" value="#{accountsBean.selectedCustomerId}" /></td>
+                                        <td><h:inputText id="initAmount" value="#{accountsBean.selectedInitialAmount}" /></td>
+                                    </tr>
+                                </table>
+
+                                <br />
+                                <br />
+                                <h:commandButton id="add_new_account" action="#{accountsBean.createNewAccount()}"
+                                                 value="Create Account"
+                                                 styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
+                                    <f:ajax execute="customerId initAmount" render="customers output"/>
                                 </h:commandButton>
                             </fieldset>
                         </div>

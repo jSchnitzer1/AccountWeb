@@ -24,7 +24,8 @@ public class AccountsBean implements Serializable {
     private static String baseURL;
     private String commandResult;
     private List<Customer> customers;
-    private List<Account> accounts;
+    private String selectedCustomerId;
+    private String selectedInitialAmount;
     @EJB
     AccountsFacade accountsFacade;
 
@@ -36,8 +37,12 @@ public class AccountsBean implements Serializable {
         return customers;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public String getSelectedCustomerId() {
+        return selectedCustomerId;
+    }
+
+    public void setSelectedCustomerId(String selectedCustomerId) {
+        this.selectedCustomerId = selectedCustomerId;
     }
 
     public String getCommandResult() {
@@ -46,6 +51,14 @@ public class AccountsBean implements Serializable {
 
     public void setCommandResult(String commandResult) {
         this.commandResult = commandResult;
+    }
+
+    public String getSelectedInitialAmount() {
+        return selectedInitialAmount;
+    }
+
+    public void setSelectedInitialAmount(String selectedInitialAmount) {
+        this.selectedInitialAmount = selectedInitialAmount;
     }
 
     @PostConstruct
@@ -66,9 +79,47 @@ public class AccountsBean implements Serializable {
     public AccountsBean() {
     }
 
-    public void generateCustomers(){
-        List<Customer> customers = accountsFacade.createCustomers();
-        this.customers = customers;
-        commandResult = customers != null ? "Customers database generated successfully" : "Error occured while generating customers into database. Error logged.";
+    public void generateCustomers(boolean showCommandResult) {
+        try {
+            List<Customer> customers = accountsFacade.createCustomers();
+            this.customers = customers;
+            if (showCommandResult)
+                commandResult = (customers != null) ? "Customers database generated successfully" : "Error occured while generating customers into database. Error logged.";
+        } catch (Exception ex) {
+            LOGGER.error("generateCustomers - Error is: ", ex);
+            if (showCommandResult)
+                commandResult = "Error: " + ex.getMessage();
+        }
+    }
+
+    public void createNewAccount() {
+        int id;
+        double initialAmount;
+
+        if (selectedCustomerId == null || selectedCustomerId.isEmpty()) {
+            commandResult = "Customer Id must be entered!";
+            return;
+        }
+        if (selectedInitialAmount == null || selectedInitialAmount.isEmpty()) {
+            commandResult = "Initial amount must be entered!";
+            return;
+        }
+
+        try {
+            id = Integer.parseInt(selectedCustomerId);
+        } catch (Exception e) {
+            commandResult = "Id must be an integer!";
+            return;
+        }
+
+        try {
+            initialAmount = Double.parseDouble(selectedInitialAmount);
+        } catch (Exception e) {
+            commandResult = "Initial amount must be a number!";
+            return;
+        }
+
+        commandResult = accountsFacade.createAccount(id, initialAmount);
+        generateCustomers(false);
     }
 }

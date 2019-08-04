@@ -1,6 +1,7 @@
 package com.accounts.web.controller;
 
 import com.accounts.web.convert.JsonObjectDeserializer;
+import com.accounts.web.http.Response;
 import com.accounts.web.http.ResponseBuilder;
 import com.accounts.web.model.Customer;
 import org.apache.log4j.Logger;
@@ -14,28 +15,50 @@ import java.util.List;
 @Stateless
 public class AccountsFacade {
     private static final Logger LOGGER = Logger.getLogger(AccountsFacade.class.getName());
+
     public AccountsFacade() {
     }
 
     public List<Customer> createCustomers() {
         LOGGER.info("checkAccountEndpoint is triggered");
-        Reader reader = null;
+        sleep200();
+
+        Response response = ResponseBuilder.buildReponse("POST", "application/json", "/api/account/initCustomers");
+        if (response != null) {
+            try {
+                return response.getResponseCode() < 299 ? JsonObjectDeserializer.jsonToCustomers(response.getReader()) : null;
+            } catch (IOException e) {
+                LOGGER.error("checkAccountEndpoint - IOException in parsing returned customers json, error is: ", e);
+            } catch (ParseException e) {
+                LOGGER.error("checkAccountEndpoint - ParseException: unable to parse returned customers json, error is: ", e);
+            }
+        }
+        return null;
+    }
+
+    public String createAccount(int customerId, double initialAmount) {
+        LOGGER.info("createAccount is triggered");
+        Reader reader;
+        sleep200();
+        Response response = ResponseBuilder.buildReponse("POST", "application/json", "/api/account/createAccount/" + customerId + "/" + initialAmount);
+        if(response != null) {
+            try {
+                return JsonObjectDeserializer.jsonToCreatedAccount(response.getReader());
+            } catch (IOException e) {
+                LOGGER.error("checkAccountEndpoint - IOException in parsing returned account json, error is: ", e);
+            } catch (ParseException e) {
+                LOGGER.error("checkAccountEndpoint - ParseException: unable to parse returned account json, error is: ", e);
+            }
+        }
+        return "Error in service response!";
+    }
+
+    private void sleep200() {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
             LOGGER.error("createCustomers - thread sleep error", e);
         }
-
-        reader = ResponseBuilder.buildReponse("POST", "application/json", "/api/account/initCustomers");
-        if (reader != null) {
-            try {
-                return JsonObjectDeserializer.jsonToCustomers(reader);
-            } catch (IOException e) {
-                LOGGER.error("checkAccountEndpoint - IOException in parsing returned customers json, error is: ", e);
-            } catch (ParseException e) {
-                LOGGER.error("checkAccountEndpoint - unable to parse returned customers json, error is: ", e);
-            }
-        }
-        return null;
     }
+
 }
