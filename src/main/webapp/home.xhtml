@@ -15,81 +15,90 @@
 <h:body>
 
     <h:form id="form1">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="g-pr-15--lg">
-                    <div class="d-flex justify-content-end align-items-center g-brd-bottom g-brd-gray-light-v4 g-pt-40 g-pb-20 g-font-bold g-font-size-18">
-                        Bank Accounts
-                    </div>
-                    <div class="g-brd-bottom g-brd-gray-light-v4">
-                        <div class="row g-pt-30">
-                            <div class="col-6 col-sm-5 col-lg-4 g-mb-30">
-                                <figure class="g-pos-rel">
-                                    <img class="img-fluid" src="#{resource['images/user1.png']}"
-                                         alt="Image Description"/>
-                                </figure>
-                            </div>
-
-                            <div class="col-6 col-sm-7 col-lg-8 g-mb-15">
-                                <div class="g-mb-30">
-                                    <h4 class="h5 g-color-black mb-0 mt-1">
-                                        <span class="u-link-v5 g-color-black g-color-primary--hover">
-                                            Customer: Khaled Jendi
-                                        </span>
-                                    </h4>
-                                    <p>You have 2 accounts</p>
-                                    <p>Account #1 balance: 5000, Transactions:</p>
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <a class="d-block g-color-text g-color-primary--hover g-text-underline--none--hover g-py-5" href="#">Transaction #1: 500kr</a>
-                                        </li>
-                                        <li>
-                                            <a class="d-block g-color-text g-color-primary--hover g-text-underline--none--hover g-py-5" href="#">Transaction #2: 500kr</a>
-                                        </li>
-                                    </ul>
-                                    <p>Account #2 balance: 6000, Transactions:</p>
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <a class="d-block g-color-text g-color-primary--hover g-text-underline--none--hover g-py-5" href="#">Transaction #1: 200kr</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <a class="btn u-btn-primary g-font-size-12 text-uppercase g-py-10 g-px-20" href="#">
-                                    More Info
-                                </a>
-                            </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="g-pr-15--lg">
+                        <div class="d-flex justify-content-end align-items-center g-brd-bottom g-brd-gray-light-v4 g-pt-40 g-pb-20 g-font-bold g-font-size-18">
+                            Bank Accounts
                         </div>
+                        <h:panelGroup id="customers">
+                            <ui:repeat value="#{accountsBean.customers}" var="c">
+                                <div class="g-brd-bottom g-brd-gray-light-v4">
+                                    <div class="row g-pt-30">
+                                        <div class="col-6 col-sm-5 col-lg-4 g-mb-30">
+                                            <figure class="g-pos-rel">
+                                                <img class="img-fluid" src="#{resource['images/user1.png']}"
+                                                     alt="Image Description"/>
+                                            </figure>
+                                        </div>
+
+                                        <div class="col-6 col-sm-7 col-lg-8 g-mb-15">
+                                            <div class="g-mb-30">
+                                                <h3 class="h5 g-color-black mb-0 mt-1">
+                                                    <span class="u-link-v5 g-color-black g-color-primary--hover">
+                                                        Customer Id: #{c.customerId}
+                                                    </span>
+                                                </h3>
+                                                <h3 class="h5 g-color-black mb-0 mt-1">
+                                                    <span class="u-link-v5 g-color-black g-color-primary--hover">
+                                                        Name: #{c.firstname} #{c.lastname}
+                                                    </span>
+                                                </h3>
+                                                <p>You have #{c.accounts != null ? c.accounts.size() : 0} accounts</p>
+
+                                                <ui:repeat value="#{c.accounts}" var="a" varStatus="aStatus">
+                                                    <p>Account No. #{aStatus.index + 1} - <span class="g-font-bold-century" style="color: red">balance: #{a.balance} SEK</span></p>
+                                                    <p class="g-font-bold-century">Transactions</p>
+<!--                                                    <ul class="list-unstyled">-->
+<!--                                                        <li>-->
+<!--                                                            <a class="d-block g-color-text g-color-primary&#45;&#45;hover g-text-underline&#45;&#45;none&#45;&#45;hover g-py-5"-->
+<!--                                                               href="#">Transaction #1: 500kr</a>-->
+<!--                                                        </li>                                                                                                           -->
+<!--                                                    </ul>-->
+                                                </ui:repeat>
+                                            </div>
+                                            <a class="btn u-btn-primary g-font-size-12 text-uppercase g-py-10 g-px-20"
+                                               href="#">
+                                                More Info
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </h:panelGroup>
+
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-4 g-brd-left--lg g-brd-gray-light-v4 g-pt-40">
-                <div class="g-pl-15--lg g-pt-60">
+                <div class="col-md-4 g-brd-left--lg g-brd-gray-light-v4 g-pt-40">
+                    <div class="g-pl-15--lg g-pt-60">
                         <div id="filter_contents">
+                            <div class="g-font-size-11"
+                                 style="margin-bottom: 25px;">** Initializing database is an expensive operation and takes long when triggered for the first time **
+                            </div>
                             <fieldset class="">
-                                <legend>Init Dababase</legend>
-                                <h:commandButton id="generate_db" value="Generate" styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
-                                    <f:ajax execute="" render="output"/>
+                                <legend>Generate Customers</legend>
+                                <h:commandButton id="generate_db" action="#{accountsBean.generateCustomers()}"
+                                                 value="Generate"
+                                                 styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
+                                    <f:ajax execute="" render="customers output"/>
                                 </h:commandButton>
                             </fieldset>
                         </div>
 
-<!--                        <h:commandButton id="b1" value="Welcome Me" styleClass="btn btn-block u-btn-black g-font-size-12 text-uppercase g-py-12 g-px-25">-->
-<!--                            <f:ajax execute="" render="output"/>-->
-<!--                        </h:commandButton>-->
-
-                        <h2><h:outputText id="output" value="#{accountsBean.checkAccountFacade}"/></h2>
+                        <h2><h:outputText style="line-height: 1.0;" id="output" value="#{accountsBean.commandResult}"/>
+                        </h2>
 
                         <div id="ajaxloader" class="spinner" style="display: none;">
-                            <img src="#{resource['images/spinner.gif']}" alt="" />
+                            <img src="#{resource['images/spinner.gif']}" alt=""/>
                             <div>Loading</div>
                         </div>
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </h:form>
 
     <!-- JS Global Compulsory -->
