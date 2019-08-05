@@ -14,7 +14,7 @@ public class ResponseBuilder {
     private static final Logger LOGGER = Logger.getLogger(ResponseBuilder.class.getName());
 
     public static Response buildReponse(String method, String contentType, String methodURL) {
-        LOGGER.info("checkTransactionService is triggered");
+        LOGGER.info("buildReponse is triggered");
         Response response = new Response();
         try {
             URL url = new URL(AccountsBean.getBaseURL() + methodURL);

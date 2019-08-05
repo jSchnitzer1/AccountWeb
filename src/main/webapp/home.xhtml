@@ -49,7 +49,7 @@
 
                                                 <ui:repeat value="#{c.accounts}" var="a" varStatus="aStatus">
                                                     <p>Account No. #{aStatus.index + 1} <br />
-                                                        <span class="g-font-bold-century" style="color: red">Account Id: #{a.accountId} - balance: #{a.balance} SEK</span>
+                                                        <span class="g-font-bold-century" style="color: red">Account Id: #{a.accountId} (#{accountsBean.getDefaultAccount(a.defaultAccount)}) - balance: #{a.balance} SEK</span>
                                                     </p>
                                                     <p class="g-font-bold-century">Transactions</p>
 <!--                                                    <ul class="list-unstyled">-->
@@ -92,12 +92,12 @@
                                 <legend>Create Account</legend>
                                 <table border="0" cellspacing="5">
                                     <tr>
-                                        <td>Customer:</td>
+                                        <td>Customer Id:</td>
                                         <td>Initial Amount:</td>
                                     </tr>
                                     <tr>
                                         <td><h:inputText id="customerId" value="#{accountsBean.selectedCustomerId}" /></td>
-                                        <td><h:inputText id="initAmount" value="#{accountsBean.selectedInitialAmount}" /></td>
+                                        <td><h:inputText id="initAmount" value="#{accountsBean.selectedAmount}" /></td>
                                     </tr>
                                 </table>
 
@@ -107,6 +107,29 @@
                                                  value="Create Account"
                                                  styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
                                     <f:ajax execute="customerId initAmount" render="customers output"/>
+                                </h:commandButton>
+                            </fieldset>
+
+                            <br />
+                            <fieldset class="">
+                                <legend>Transaction</legend>
+                                <table border="0" cellspacing="5">
+                                    <tr>
+                                        <td>Customer Id:</td>
+                                        <td>Transaction Amount:</td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:inputText id="customerId1" value="#{accountsBean.selectedCustomerId}" /></td>
+                                        <td><h:inputText id="transaction_amount" value="#{accountsBean.selectedAmount}" /></td>
+                                    </tr>
+                                </table>
+
+                                <br />
+                                <br />
+                                <h:commandButton id="add_new_transaction" action="#{accountsBean.sendNewTransaction()}"
+                                                 value="Send Transaction"
+                                                 styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
+                                    <f:ajax execute="customerId1 transaction_amount" render="customers output"/>
                                 </h:commandButton>
                             </fieldset>
                         </div>
@@ -137,14 +160,20 @@
             var ajaxstatus = data.status;
             var ajaxloader = document.getElementById("ajaxloader");
             var generate_db = document.getElementById("form1:generate_db");
+            var add_new_account = document.getElementById("form1:add_new_account");
+            var add_new_transaction = document.getElementById("form1:add_new_transaction");
 
             switch (ajaxstatus) {
                 case "begin":
                     generate_db.disabled = true;
+                    add_new_account.disabled = true;
+                    add_new_transaction.disabled = true;
                     ajaxloader.style.display = 'block';
                     break;
                 case "complete":
                     generate_db.disabled = false;
+                    add_new_account.disabled = false;
+                    add_new_transaction.disabled = false;
                     ajaxloader.style.display = 'none';
                     break;
                 case "success":
