@@ -4,6 +4,7 @@ import com.accounts.web.convert.JsonObjectDeserializer;
 import com.accounts.web.http.Response;
 import com.accounts.web.http.ResponseBuilder;
 import com.accounts.web.model.Customer;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.parser.ParseException;
 
@@ -48,6 +49,25 @@ public class AccountsFacade {
                 LOGGER.error("checkAccountEndpoint - IOException in parsing returned account json, error is: ", e);
             } catch (ParseException e) {
                 LOGGER.error("checkAccountEndpoint - ParseException: unable to parse returned account json, error is: ", e);
+            }
+        }
+        return "Error in service response!";
+    }
+
+    public String createTransaction(int customerId, double txAmount) {
+        LOGGER.info("createTransaction is triggered");
+        Reader reader;
+        sleep200();
+        Response response = ResponseBuilder.buildReponse("POST", "application/json", "/api/account/createTransaction/" + customerId + "/" + txAmount);
+        if(response != null) {
+            if(response.getResponseCode() < 299) {
+                return "Transaction successfully created for customer: " + customerId;
+            } else {
+                try {
+                    return IOUtils.toString(response.getReader());
+                } catch (IOException e) {
+                    return "Error in creating a new transaction";
+                }
             }
         }
         return "Error in service response!";

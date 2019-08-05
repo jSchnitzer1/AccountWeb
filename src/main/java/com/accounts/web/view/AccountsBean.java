@@ -1,7 +1,6 @@
 package com.accounts.web.view;
 
 import com.accounts.web.controller.AccountsFacade;
-import com.accounts.web.model.Account;
 import com.accounts.web.model.Customer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -25,7 +24,7 @@ public class AccountsBean implements Serializable {
     private String commandResult;
     private List<Customer> customers;
     private String selectedCustomerId;
-    private String selectedInitialAmount;
+    private String selectedAmount;
     @EJB
     AccountsFacade accountsFacade;
 
@@ -53,12 +52,12 @@ public class AccountsBean implements Serializable {
         this.commandResult = commandResult;
     }
 
-    public String getSelectedInitialAmount() {
-        return selectedInitialAmount;
+    public String getSelectedAmount() {
+        return selectedAmount;
     }
 
-    public void setSelectedInitialAmount(String selectedInitialAmount) {
-        this.selectedInitialAmount = selectedInitialAmount;
+    public void setSelectedAmount(String selectedAmount) {
+        this.selectedAmount = selectedAmount;
     }
 
     @PostConstruct
@@ -93,33 +92,71 @@ public class AccountsBean implements Serializable {
     }
 
     public void createNewAccount() {
-        int id;
-        double initialAmount;
+        if (isInvalidCustomerIdOrAmount()) return;
 
-        if (selectedCustomerId == null || selectedCustomerId.isEmpty()) {
-            commandResult = "Customer Id must be entered!";
-            return;
-        }
-        if (selectedInitialAmount == null || selectedInitialAmount.isEmpty()) {
-            commandResult = "Initial amount must be entered!";
-            return;
-        }
+        Integer id = null;
+        id = parseCustomerId();
+        if(id == null) return;
 
-        try {
-            id = Integer.parseInt(selectedCustomerId);
-        } catch (Exception e) {
-            commandResult = "Id must be an integer!";
-            return;
-        }
+        Double amount;
+        amount = parseAmount();
+        if(amount == null) return;
 
-        try {
-            initialAmount = Double.parseDouble(selectedInitialAmount);
-        } catch (Exception e) {
-            commandResult = "Initial amount must be a number!";
-            return;
-        }
-
-        commandResult = accountsFacade.createAccount(id, initialAmount);
+        commandResult = accountsFacade.createAccount(id, amount);
         generateCustomers(false);
     }
+
+
+    public void sendNewTransaction() {
+        if (isInvalidCustomerIdOrAmount()) return;
+
+        Integer id = null;
+        id = parseCustomerId();
+        if(id == null) return;
+
+        Double amount;
+        amount = parseAmount();
+        if(amount == null) return;
+        commandResult = accountsFacade.createTransaction(id, amount);
+        generateCustomers(false);
+    }
+
+    public String getDefaultAccount(boolean isDefault) {
+        return (isDefault) ? "-Default Account-" : "-Not Default Account-";
+    }
+
+    private Integer parseCustomerId() {
+        int id;
+        try {
+            id = Integer.parseInt(selectedCustomerId);
+            return id;
+        } catch (Exception e) {
+            commandResult = "Id must be an integer!";
+            return null;
+        }
+    }
+
+    private Double parseAmount() {
+        Double amount = null;
+        try {
+            amount = Double.parseDouble(selectedAmount);
+            return amount;
+        } catch (Exception e) {
+            commandResult = "Initial amount must be a number!";
+        }
+        return null;
+    }
+
+    private boolean isInvalidCustomerIdOrAmount() {
+        if (selectedCustomerId == null || selectedCustomerId.isEmpty()) {
+            commandResult = "Customer Id must be entered!";
+            return true;
+        }
+        if (selectedAmount == null || selectedAmount.isEmpty()) {
+            commandResult = "Amount must be entered!";
+            return true;
+        }
+        return false;
+    }
+
 }

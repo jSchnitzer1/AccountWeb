@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class JsonObjectDeserializer {
-    private static final Logger LOGGER = Logger.getLogger(ResponseBuilder.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JsonObjectDeserializer.class.getName());
     public static List<Customer> jsonToCustomers(Reader reader) throws IOException, ParseException {
         List<Customer> customerAccounts = new ArrayList<>();
         JSONParser parser=new JSONParser();
@@ -31,7 +31,7 @@ public class JsonObjectDeserializer {
             JSONArray jAccounts = (JSONArray) jCustomerAccounts.get("accountDTOs");
             jAccounts.forEach(a -> {
                 JSONObject jAccount = (JSONObject) a;
-                Account account = new Account((long) jAccount.get("accountId"), (double) jAccount.get("balance"), false, customer);
+                Account account = new Account((long) jAccount.get("accountId"), (double) jAccount.get("balance"), (boolean) jAccount.get("defaultAccount"), customer);
                 accounts.add(account);
             });
             customer.setAccounts(accounts);

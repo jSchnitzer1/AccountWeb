@@ -3,7 +3,7 @@ package com.accounts.web.model;
 public class Account {
     private long accountId;
     private double balance;
-    private boolean isDefault;
+    private boolean defaultAccount;
     private Customer customer;
 
     public long getAccountId() {
@@ -22,12 +22,12 @@ public class Account {
         this.balance = balance;
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    public boolean isDefaultAccount() {
+        return defaultAccount;
     }
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
+    public void setDefaultAccount(boolean defaultAccount) {
+        this.defaultAccount = defaultAccount;
     }
 
     public Customer getCustomer() {
@@ -41,10 +41,10 @@ public class Account {
     public Account() {
     }
 
-    public Account(long accountId, double balance, boolean isDefault, Customer customer) {
+    public Account(long accountId, double balance, boolean defaultAccount, Customer customer) {
         this.accountId = accountId;
         this.balance = balance;
-        this.isDefault = isDefault;
+        this.defaultAccount = defaultAccount;
         this.customer = customer;
     }
 }
