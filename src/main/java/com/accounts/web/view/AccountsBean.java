@@ -1,6 +1,7 @@
 package com.accounts.web.view;
 
 import com.accounts.web.controller.AccountsFacade;
+import com.accounts.web.controller.TypeOfFetching;
 import com.accounts.web.model.Customer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -78,9 +79,21 @@ public class AccountsBean implements Serializable {
     public AccountsBean() {
     }
 
-    public void generateCustomers(boolean showCommandResult) {
+    public void generateCustomers(boolean showCommandResult, String type) {
         try {
-            List<Customer> customers = accountsFacade.createCustomers();
+            List<Customer> customers = null;
+            switch (type) {
+                case "init":
+                    customers = accountsFacade.fetch(TypeOfFetching.INIT);
+                    break;
+                case "all":
+                    customers = accountsFacade.fetch(TypeOfFetching.ALL);
+                    break;
+                default:
+                    customers = accountsFacade.fetch(TypeOfFetching.INIT);
+                    break;
+            }
+
             this.customers = customers;
             if (showCommandResult)
                 commandResult = (customers != null) ? "Customers database generated successfully" : "Error occured while generating customers into database. Error logged.";
@@ -103,7 +116,7 @@ public class AccountsBean implements Serializable {
         if(amount == null) return;
 
         commandResult = accountsFacade.createAccount(id, amount);
-        generateCustomers(false);
+        generateCustomers(false, "all");
     }
 
 
@@ -118,7 +131,7 @@ public class AccountsBean implements Serializable {
         amount = parseAmount();
         if(amount == null) return;
         commandResult = accountsFacade.createTransaction(id, amount);
-        generateCustomers(false);
+        generateCustomers(false, "all");
     }
 
     public String getDefaultAccount(boolean isDefault) {

@@ -3,6 +3,7 @@ package com.accounts.web.convert;
 import com.accounts.web.http.ResponseBuilder;
 import com.accounts.web.model.Account;
 import com.accounts.web.model.Customer;
+import com.accounts.web.model.Transaction;
 import org.apache.log4j.Logger;
 import org.json.simple.*;
 import org.json.simple.parser.*;
@@ -31,7 +32,15 @@ public class JsonObjectDeserializer {
             JSONArray jAccounts = (JSONArray) jCustomerAccounts.get("accountDTOs");
             jAccounts.forEach(a -> {
                 JSONObject jAccount = (JSONObject) a;
-                Account account = new Account((long) jAccount.get("accountId"), (double) jAccount.get("balance"), (boolean) jAccount.get("defaultAccount"), customer);
+
+                JSONArray jTransactions = (JSONArray) jAccount.get("transactions");
+                List<Transaction> transactions = new ArrayList<>();
+                jTransactions.forEach(jTx -> {
+                    JSONObject jTransaction = (JSONObject) jTx;
+                    transactions.add(new Transaction((long) jTransaction.get("transactionId"), (double) (Math.round(((double) jTransaction.get("transactionAmount")) * 100) / 100), (String) jTransaction.get("transactionUUID"), (long) jTransaction.get("accountId")));
+                });
+
+                Account account = new Account((long) jAccount.get("accountId"), (double) jAccount.get("balance"), (boolean) jAccount.get("defaultAccount"), customer, transactions);
                 accounts.add(account);
             });
             customer.setAccounts(accounts);
