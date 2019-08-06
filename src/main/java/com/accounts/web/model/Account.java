@@ -1,10 +1,13 @@
 package com.accounts.web.model;
 
+import java.util.List;
+
 public class Account {
     private long accountId;
     private double balance;
     private boolean defaultAccount;
     private Customer customer;
+    private List<Transaction> transactions;
 
     public long getAccountId() {
         return accountId;
@@ -38,13 +41,22 @@ public class Account {
         this.customer = customer;
     }
 
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
     public Account() {
     }
 
-    public Account(long accountId, double balance, boolean defaultAccount, Customer customer) {
+    public Account(long accountId, double balance, boolean defaultAccount, Customer customer, List<Transaction> transactions) {
         this.accountId = accountId;
         this.balance = balance;
         this.defaultAccount = defaultAccount;
         this.customer = customer;
+        this.transactions = transactions;
     }
 }

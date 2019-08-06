@@ -20,11 +20,25 @@ public class AccountsFacade {
     public AccountsFacade() {
     }
 
-    public List<Customer> createCustomers() {
+    public List<Customer> fetch(TypeOfFetching typeOfFetching) {
         LOGGER.info("checkAccountEndpoint is triggered");
         sleep200();
 
-        Response response = ResponseBuilder.buildReponse("POST", "application/json", "/api/account/initCustomers");
+        String method = "", url = "";
+        switch (typeOfFetching) {
+            case INIT:
+                method = "POST";
+                url = "/api/account/initCustomers";
+                break;
+            case ALL:
+                method = "GET";
+                url = "/api/account/fetchCustomers";
+                break;
+            default:
+                return null;
+        }
+
+        Response response = ResponseBuilder.buildReponse(method, "application/json", url);
         if (response != null) {
             try {
                 return response.getResponseCode() < 299 ? JsonObjectDeserializer.jsonToCustomers(response.getReader()) : null;
