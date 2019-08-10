@@ -26,6 +26,8 @@ public class AccountsBean implements Serializable {
     private List<Customer> customers;
     private String selectedCustomerId;
     private String selectedAmount;
+    private String pageStart;
+    private String pageSize;
     @EJB
     AccountsFacade accountsFacade;
 
@@ -61,6 +63,22 @@ public class AccountsBean implements Serializable {
         this.selectedAmount = selectedAmount;
     }
 
+    public String getPageStart() {
+        return pageStart;
+    }
+
+    public void setPageStart(String pageStart) {
+        this.pageStart = pageStart;
+    }
+
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
+    }
+
     @PostConstruct
     public void init() {
         String log4jConfigPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("WEB-INF/log4j.properties");
@@ -84,13 +102,19 @@ public class AccountsBean implements Serializable {
             List<Customer> customers = null;
             switch (type) {
                 case "init":
-                    customers = accountsFacade.fetch(TypeOfFetching.INIT);
+                    customers = accountsFacade.fetch(TypeOfFetching.INIT, null, null);
                     break;
                 case "all":
-                    customers = accountsFacade.fetch(TypeOfFetching.ALL);
+                    customers = accountsFacade.fetch(TypeOfFetching.ALL, null, null);
+                    break;
+                case "some":
+                    Integer start, size = null;
+                    start = parseInt(pageStart);
+                    size = parseInt(pageSize);
+                    customers = accountsFacade.fetch(TypeOfFetching.SOME, start, size);
                     break;
                 default:
-                    customers = accountsFacade.fetch(TypeOfFetching.INIT);
+                    customers = accountsFacade.fetch(TypeOfFetching.INIT, null, null);
                     break;
             }
 
@@ -108,7 +132,7 @@ public class AccountsBean implements Serializable {
         if (isInvalidCustomerIdOrAmount()) return;
 
         Integer id = null;
-        id = parseCustomerId();
+        id = parseInt(selectedCustomerId);
         if(id == null) return;
 
         Double amount;
@@ -124,7 +148,7 @@ public class AccountsBean implements Serializable {
         if (isInvalidCustomerIdOrAmount()) return;
 
         Integer id = null;
-        id = parseCustomerId();
+        id = parseInt(selectedCustomerId);
         if(id == null) return;
 
         Double amount;
@@ -138,10 +162,10 @@ public class AccountsBean implements Serializable {
         return (isDefault) ? "-Default Account-" : "-Not Default Account-";
     }
 
-    private Integer parseCustomerId() {
+    private Integer parseInt(String strId) {
         int id;
         try {
-            id = Integer.parseInt(selectedCustomerId);
+            id = Integer.parseInt(strId);
             return id;
         } catch (Exception e) {
             commandResult = "Id must be an integer!";
