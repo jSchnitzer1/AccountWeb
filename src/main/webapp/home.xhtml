@@ -138,7 +138,7 @@
                             <br />
                             <br />
                             <div class="g-font-size-11"
-                                 style="margin-bottom: 25px;">** Fetch all customers along with accounts and transactions for each account  **
+                                 style="margin-bottom: 25px;">** Fetch (all) customers along with accounts and transactions for each account  **
                             </div>
                             <fieldset class="">
                                 <legend>Generate Customers</legend>
@@ -146,6 +146,34 @@
                                                  value="Fetch All"
                                                  styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
                                     <f:ajax execute="" render="customers output"/>
+                                </h:commandButton>
+                            </fieldset>
+
+                            <br />
+                            <br />
+                            <div class="g-font-size-11"
+                                 style="margin-bottom: 25px;">** Fetch (some) customers along with accounts and transactions for each account  **
+                            </div>
+                            <fieldset class="">
+                                <table border="0" cellspacing="5">
+                                    <tr>
+                                        <td>Page Start:</td>
+                                        <td>Size:</td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:inputText id="p_start" value="#{accountsBean.pageStart}" /></td>
+                                        <td><h:inputText id="p_size" value="#{accountsBean.pageSize}" /></td>
+                                    </tr>
+                                </table>
+
+                                <br />
+                                <br />
+
+                                <legend>Generate Customers</legend>
+                                <h:commandButton id="fetch_some" action="#{accountsBean.generateCustomers(true, 'some')}"
+                                                 value="Fetch Some"
+                                                 styleClass="btn u-btn-orange g-font-size-12 g-py-10 g-px-20 g-font-bold-century g-font-size-15">
+                                    <f:ajax execute="p_start p_size" render="customers output"/>
                                 </h:commandButton>
                             </fieldset>
                         </div>
@@ -179,6 +207,7 @@
             var add_new_account = document.getElementById("form1:add_new_account");
             var add_new_transaction = document.getElementById("form1:add_new_transaction");
             var fetch_all = document.getElementById("form1:fetch_all");
+            var fetch_some = document.getElementById("form1:fetch_some");
 
             switch (ajaxstatus) {
                 case "begin":
@@ -186,6 +215,7 @@
                     add_new_account.disabled = true;
                     add_new_transaction.disabled = true;
                     fetch_all.disabled = true;
+                    fetch_some.disabled = true;
                     ajaxloader.style.display = 'block';
                     break;
                 case "complete":
@@ -193,6 +223,7 @@
                     add_new_account.disabled = false;
                     add_new_transaction.disabled = false;
                     fetch_all.disabled = false;
+                    fetch_some.disabled = false;
                     ajaxloader.style.display = 'none';
                     break;
                 case "success":

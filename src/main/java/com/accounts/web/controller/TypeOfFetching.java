@@ -5,5 +5,6 @@ public enum TypeOfFetching {
     CUSTOMERS_ONLY,
     CUSTOMERS_ACCOUNTS,
     ACCOUNTS_TRANSACTIONS,
+    SOME,
     ALL
 }

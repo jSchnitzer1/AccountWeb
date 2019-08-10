@@ -20,7 +20,7 @@ public class AccountsFacade {
     public AccountsFacade() {
     }
 
-    public List<Customer> fetch(TypeOfFetching typeOfFetching) {
+    public List<Customer> fetch(TypeOfFetching typeOfFetching, Integer start, Integer size) {
         LOGGER.info("checkAccountEndpoint is triggered");
         sleep200();
 
@@ -33,6 +33,11 @@ public class AccountsFacade {
             case ALL:
                 method = "GET";
                 url = "/api/account/fetchCustomers";
+                break;
+            case SOME:
+                method = "GET";
+                if(start == null || size == null) url = "/api/account/fetchCustomers";
+                else url = "/api/account/fetchCustomersWithPagination?start=" + start + "&size=" + size;
                 break;
             default:
                 return null;
