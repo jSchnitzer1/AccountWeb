@@ -21,6 +21,19 @@
                     <div class="g-pr-15--lg">
                         <div class="d-flex justify-content-end align-items-center g-brd-bottom g-brd-gray-light-v4 g-pt-40 g-pb-20 g-font-bold g-font-size-18">
                             Bank Accounts
+
+                            <br />
+                            <br />
+                            <hr />
+                            <br />
+
+                            <h2><h:outputText style="line-height: 1.0;" id="output" value="#{accountsBean.commandResult}"/>
+                            </h2>
+
+                            <div id="ajaxloader" class="spinner" style="display: none;">
+                                <img src="#{resource['images/spinner.gif']}" alt=""/>
+                                <div>Loading</div>
+                            </div>
                         </div>
                         <h:panelGroup id="customers">
                             <ui:repeat value="#{accountsBean.customers}" var="c">
@@ -177,15 +190,6 @@
                                 </h:commandButton>
                             </fieldset>
                         </div>
-
-                        <h2><h:outputText style="line-height: 1.0;" id="output" value="#{accountsBean.commandResult}"/>
-                        </h2>
-
-                        <div id="ajaxloader" class="spinner" style="display: none;">
-                            <img src="#{resource['images/spinner.gif']}" alt=""/>
-                            <div>Loading</div>
-                        </div>
-
                     </div>
                 </div>
             </div>
